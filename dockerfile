@@ -1,0 +1,40 @@
+FROM alpine:3.11.6 AS base
+
+ENV TSHOCKURL="https://github.com/treslog/terraria-docker/raw/0baefd48d7071d9e0504c805b5ef77df00a5d04f/files/TShock-5.2-for-Terraria-1.4.4.9-linux-arm64-Release.zip"
+
+ENV DOTNETURL="https://github.com/treslog/terraria-docker/raw/0baefd48d7071d9e0504c805b5ef77df00a5d04f/files/dotnet-runtime-6.0.11-linux-arm64.tar.gz"
+
+RUN apk add curl
+RUN wget $TSHOCKURL -O /tshock.zip && \
+    mkdir /tshock && \
+    unzip /tshock.zip -d /tshock && \
+    rm /tshock.zip
+
+RUN tar -xf /tshock/TShock-Beta-linux-arm64-Release.tar -C /tshock && \
+    rm /tshock/TShock-Beta-linux-arm64-Release.tar
+
+RUN curl -SL -o dotnet.tar.gz $DOTNETURL && \
+    mkdir -p /usr/share/dotnet && \
+    tar -zxf dotnet.tar.gz -C /usr/share/dotnet
+
+FROM ubuntu:20.04
+
+RUN apt-get update -y && \
+    apt-get install libicu-dev curl -y 
+
+COPY --from=base /tshock/ /tshock/
+COPY --from=base /usr/share/dotnet/ /usr/share/dotnet/
+
+RUN ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+ 
+RUN echo "/tshock/TShock.Server -configpath /data -worldselectpath /data/worlds -logpath /data/logs $@" >> /tshock/start.sh && \
+    chmod +x /tshock/start.sh
+
+VOLUME ["/data"]
+EXPOSE 7777
+WORKDIR /tshock
+ENTRYPOINT ["/bin/bash", "/tshock/start.sh"]
+
+# docker build -t terraria-docker:latest .
+
+# docker run -it -p 7777:7777 -v /home/$USER/terraria:/data --name terraria-docker terraria-docker:latest
