@@ -5,7 +5,7 @@ Docker image for running a Terraria server on Linux or Raspberry Pi. TShock vers
 
 Clone the repository and build the image
 ```
-git clone https://github.com/surdle/terraria-docker.git
+git clone https://github.com/surdle/terraria-docker.git --depth=1
 cd terraria-docker
 docker build -t terraria-docker:latest .
 ```
