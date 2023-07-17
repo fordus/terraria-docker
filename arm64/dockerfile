@@ -20,7 +20,7 @@ RUN curl -SL -o dotnet.tar.gz $DOTNETURL && \
 FROM ubuntu:20.04
 
 RUN apt-get update -y && \
-    apt-get install libicu-dev -y 
+    apt-get install libicu-dev curl -y 
 
 COPY --from=base /tshock/ /tshock/
 COPY --from=base /usr/share/dotnet/ /usr/share/dotnet/
