@@ -1,6 +1,6 @@
 FROM alpine:3.11.6 AS base
 
-ENV TSHOCKURL="https://github.com/Pryaxis/TShock/releases/download/v5.2.0/TShock-5.2-for-Terraria-1.4.4.9-linux-x64-Release.zip"
+ENV TSHOCKURL="https://github.com/surdle/terraria-docker/raw/main/files/TShock-5.2-for-Terraria-1.4.4.9-linux-x64-Release.zip"
 
 RUN wget $TSHOCKURL -O /tshock.zip && \
     mkdir /tshock && \
